@@ -13,7 +13,7 @@ export const ROBONOMICS = {
   lighthouse: 'airalab.lighthouse.5.robonomics.sid'
 };
 
-export const VALIDATOR = '0x17B82177D8753bd8090dadA60B953CFaDD9eF492';
+export const VALIDATOR = '0x4af74a76aA7B934C7397FDD0C2428762c8F7c550';
 // export const VALIDATOR = '0x0000000000000000000000000000000000000000';
 export const MODEL = 'QmUB6ajZTLLMZg7re1v4hw44aoG8HDQDHr9JyujU264Aw2';
 export const OBJECTIVE = 'Qmbm3o2wkqseSEi5F69CPAuDrsKnrwTJ3HN5FVLPgLHKUm';
