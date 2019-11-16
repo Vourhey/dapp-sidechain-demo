@@ -1,133 +1,183 @@
 <template>
   <div>
-    <h1>Market</h1>
-    <div>
-      Lighthouse:
-      <a
-        :href="`https://etherscan.io/address/${lighthouse.address}`"
-        target="blank"
-      >{{ lighthouse.name }}</a>
-    </div>
+    <h1 class="text-md-center">Данные ВИЭ “Вертушка”</h1>
 
-    <div>
-      Cost: {{ price | fromWei(9, 'XRT') }} |
-      Balance:
-      <a
-        :href="`https://etherscan.io/token/${token}?a=${account}`"
-        target="blank"
-      >{{ balance | fromWei(9, 'XRT') }}</a>
-      <span v-if="price > 0">| Approved: {{ approveTrade | fromWei(9, 'XRT') }}</span>
-    </div>
+    <v-container grid-list-md class="px-3">
+      <v-layout row wrap>
+        <v-flex md12>
+          <v-card>
+            <v-card-text>
+              <v-container grid-list-md class="px-3">
+                <v-layout row wrap>
+                  <v-flex md12>
+                    <b>Маяк</b>:
+                    <a
+                      :href="`https://etherscan.io/address/${lighthouse.address}`"
+                      target="blank"
+                    >{{ lighthouse.name }}</a>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+              <v-divider/>
 
-    <button
-      v-if="price > 0 && approveTrade < price"
-      :disabled="loadingApprove || balance < price"
-      @click="approve"
-    >Approve</button>
-    <button v-if="approveTrade >= price" @click="demand">demand</button>
-    <button v-if="approveTrade >= price" @click="offer">offer</button>
+              <v-container grid-list-md class="px-3">
+                <v-layout row wrap>
+                  <v-flex md12>
+                    <div>
+                      <b>Адрес владельца ВИЭ в сети</b>: <a :href="`https://etherscan.io/address/${account}`" target="blank" >{{ account }}</a>
+                    </div>
+                    <div>
+                      <b>Стоимость</b>: {{ price | fromWei(9, 'XRT') }} |
+                      <b>Баланс</b>:
+                      <a :href="`https://etherscan.io/token/${token}?a=${account}`" target="blank" >{{ balance | fromWei(9, 'XRT') }}</a>
+                      <span v-if="price > 0">| Approved: {{ approveTrade | fromWei(9, 'XRT') }}</span>
+                    </div>
+                  </v-flex>
+                </v-layout>
+              </v-container>
 
-    <div v-if="liability.length>0">
-      <h3>Liability</h3>
-      <div class="block" v-for="(item, i) in liability" :key="i">
-        <b>liability:</b>
-        <a :href="`https://etherscan.io/address/${item.address}`" target="_blank">{{ item.address }}</a>
-        <br>
-        <b>lighthouse:</b>
-        <a
-          :href="`https://etherscan.io/address/${item.lighthouse}`"
-          target="_blank"
-        >{{ item.lighthouse }}</a>
-        <br>
-        <b>validator:</b>
-        <a
-          :href="`https://etherscan.io/address/${item.validator}`"
-          target="_blank"
-        >{{ item.validator }}</a>
-        <br>
-        <b>model:</b>
-        {{ item.model }}
-        <br>
-        <b>objective:</b>
-        {{ item.objective }}
-        <br>
-        <b>token:</b>
-        {{ item.token }}
-        <br>
-        <b>cost:</b>
-        {{ item.cost }}
-        <br>
-        <b>promisee:</b>
-        {{ item.promisee }}
-        <br>
-        <b>promisor:</b>
-        {{ item.promisor }}
-        <br>
-        <div v-if="item.result != ''">
-          <b>Results:</b>
-          <a :href="`https://ipfs.io/ipfs/${item.result}`" target="_blank">{{ item.result }}</a>
-          <span v-if="item.check === true">+</span>
-          <span v-else>-</span>
-        </div>
-        <div v-if="item.result == ''">
-          <b>Results:</b>
-          <button @click="result(item.address)">send</button>
-        </div>
-      </div>
-    </div>
+              <v-btn
+                v-if="price > 0 && approveTrade < price"
+                :disabled="loadingApprove || balance < price"
+                @click="approve">
+                  Approve
+              </v-btn>
 
-    <div v-if="demands.length>0">
-      <h3>Demands</h3>
-      <div class="block" v-for="(item, i) in demands" :key="i">
-        <b>sender:</b>
-        {{ item.sender }}
-        <br>
-        <b>validator:</b>
-        {{ item.validator }}
-        <br>
-        <b>model:</b>
-        {{ item.model }}
-        <br>
-        <b>objective:</b>
-        {{ item.objective }}
-        <br>
-        <b>token:</b>
-        {{ item.token }}
-        <br>
-        <b>cost:</b>
-        {{ item.cost }}
-        <br>
-        <b>deadline:</b>
-        {{ item.deadline }}
-      </div>
-    </div>
+              <v-btn v-if="approveTrade >= price" @click="demand">
+                Заявка
+              </v-btn>
 
-    <div v-if="offers.length>0">
-      <h3>Offers</h3>
-      <div class="block" v-for="(item, i) in offers" :key="i">
-        <b>sender:</b>
-        {{ item.sender }}
-        <br>
-        <b>validator:</b>
-        {{ item.validator }}
-        <br>
-        <b>model:</b>
-        {{ item.model }}
-        <br>
-        <b>objective:</b>
-        {{ item.objective }}
-        <br>
-        <b>token:</b>
-        {{ item.token }}
-        <br>
-        <b>cost:</b>
-        {{ item.cost }}
-        <br>
-        <b>deadline:</b>
-        {{ item.deadline }}
-      </div>
-    </div>
-  </div>
+              <v-btn v-if="approveTrade >= price" @click="offer">
+                Ответ
+              </v-btn>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+
+        <v-flex md12>
+          <v-card v-if="liability.length>0">
+            <v-card-title primary-title>
+              <div>
+                <h3 class="headline mb-0">Показания с 01 по 30 мая 2019 года</h3>
+              </div>
+            </v-card-title>
+            <v-card-text v-for="(item, i) in liability" :key="i">
+                <b>Суммарная генерация: 100 МВт</b>
+                <br>
+                <b>Лог от счётчика:</b>
+                <a :href="`https://ipfs.io/ipfs/${resultLink}`" target="_blank">{{ resultLink }}</a>
+                <br>
+
+                <b>Отправить показания на проверку</b>
+                <br>
+                <v-btn @click="result(item.address)" :disabled="resultSent ? true : false" >Отправить</v-btn>
+                <br>
+
+                <br>
+                <b>модель:</b>
+                {{ item.model }}
+                <br>
+                <b>параметры:</b>
+                {{ item.objective }}
+                <br>
+                <b>токен:</b>
+                {{ item.token }}
+                <br>
+                <b>стоимость:</b>
+                {{ item.cost }}
+                <br>
+                <b>заказчик:</b>
+                {{ item.promisee }}
+                <br>
+                <b>исполнитель:</b>
+                {{ item.promisor }}
+                <br>
+                <div v-if="item.result != ''">
+                  <b>Результат:</b>
+                  <a :href="`https://ipfs.io/ipfs/${item.result}`" target="_blank">{{ item.result }}</a>
+                  <span v-if="item.check === true">+</span>
+                  <span v-else>-</span>
+                </div>
+                <div v-if="item.result == ''">
+                  <b>Результат:</b>
+                  <v-btn @click="result(item.address)">Отправить</v-btn>
+                </div>
+              </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+
+      <v-layout row wrap>
+        <v-flex md6>
+          <v-card>
+            <v-card-title primary-title>
+              <div>
+                <h3 class="headline mb-0">Заявки</h3>
+              </div>
+            </v-card-title>
+            <v-card-text>
+              <p class="t-break" v-for="(item, i) in demands" :key="i">
+                <b>отправитель:</b>
+                {{ item.sender }}
+                <br>
+                <b>валидатор:</b>
+                {{ item.validator }}
+                <br>
+                <b>модель:</b>
+                {{ item.model }}
+                <br>
+                <b>параметры:</b>
+                {{ item.objective }}
+                <br>
+                <b>токен:</b>
+                {{ item.token }}
+                <br>
+                <b>стоимость:</b>
+                {{ item.cost }}
+                <br>
+                <b>дедлайн:</b>
+                {{ item.deadline }}
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+
+        <v-flex md6>
+          <v-card>
+            <v-card-title primary-title>
+              <div>
+                <h3 class="headline mb-0">Предложения</h3>
+              </div>
+            </v-card-title>
+            <v-card-text>
+              <p class="t-break" v-for="(item, i) in offers" :key="i">
+                <b>отправитель:</b>
+                {{ item.sender }}
+                <br>
+                <b>валидатор:</b>
+                {{ item.validator }}
+                <br>
+                <b>модель:</b>
+                {{ item.model }}
+                <br>
+                <b>параметры:</b>
+                {{ item.objective }}
+                <br>
+                <b>токен:</b>
+                {{ item.token }}
+                <br>
+                <b>стоимость:</b>
+                {{ item.cost }}
+                <br>
+                <b>дедлайн:</b>
+                {{ item.deadline }}
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
+</div>
 </template>
 
 <script>
@@ -150,6 +200,8 @@ export default {
       liability: [],
       demands: [],
       offers: [],
+      resultSent: false,
+      resultLink: config.RESULT,
       nonce: 0
     };
   },
@@ -199,6 +251,20 @@ export default {
       }
     });
     this.fetchBalance();
+
+    // FOR TEST PURPOSE ONLY
+    this.liability.push({
+      "address": "0x911Ea2bE315f4dEDbc8C457eB9A1234971f59A81",
+      "lighthouse": "0x202a09A451DE674d2d65Bf1C90968a8d8F72cf7b",
+      "validator": "0x17B82177D8753bd8090dadA60B953CFaDD9eF492",
+      "model": "QmUB6ajZTLLMZg7re1v4hw44aoG8HDQDHr9JyujU264Aw2",
+      "objective": "Qmbm3o2wkqseSEi5F69CPAuDrsKnrwTJ3HN5FVLPgLHKUm",
+      "token": "0x966ebbfd7ecbcf44b1e05341976e0652cfa01360",
+      "cost": 0,
+      "promisee": "0x4af74a76aA7B934C7397FDD0C2428762c8F7c550",
+      "promisor": "0xEb51Cf2a474BfC756cD40A9e9092E6eEe15f2dc3",
+      "result": ""
+    });
   },
   methods: {
     fetchBalance() {
@@ -275,6 +341,7 @@ export default {
       });
     },
     result(address) {
+      this.resultSent = true;
       this.$robonomics.sendResult({
         liability: address,
         success: true,
